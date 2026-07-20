@@ -1,0 +1,143 @@
+{
+    "key": "group_6a5e3aaac3551",
+    "title": "Block Video Carousel",
+    "fields": [
+        {
+            "key": "field_6a5e3aaac3552",
+            "label": "Slide height",
+            "name": "carousel_slide_height",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Slide height in pixels. Width follows each image.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": 400,
+            "min": 100,
+            "max": 1200,
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "step": 1,
+            "prepend": "",
+            "append": "px"
+        },
+        {
+            "key": "field_6a5e3aabe9c6a",
+            "label": "Video Carousel",
+            "name": "video_carousel",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "table",
+            "pagination": 0,
+            "min": 0,
+            "max": 0,
+            "collapsed": "",
+            "button_label": "Add Row",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_6a5e3ab9e9c6b",
+                    "label": "Video Thumbnail",
+                    "name": "video_thumbnail",
+                    "aria-label": "",
+                    "type": "image",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "return_format": "url",
+                    "library": "all",
+                    "min_width": "",
+                    "min_height": "",
+                    "min_size": "",
+                    "max_width": "",
+                    "max_height": "",
+                    "max_size": "",
+                    "mime_types": "",
+                    "allow_in_bindings": 0,
+                    "preview_size": "medium",
+                    "parent_repeater": "field_6a5e3aabe9c6a"
+                },
+                {
+                    "key": "field_6a5e3ac4e9c6c",
+                    "label": "Video File",
+                    "name": "video_file",
+                    "aria-label": "",
+                    "type": "file",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "return_format": "url",
+                    "library": "all",
+                    "min_size": "",
+                    "max_size": "",
+                    "mime_types": "mp4,webm",
+                    "allow_in_bindings": 0,
+                    "parent_repeater": "field_6a5e3aabe9c6a"
+                },
+                {
+                    "key": "field_6a5e3ad4e9c6d",
+                    "label": "YouTube URL",
+                    "name": "youtube_url",
+                    "aria-label": "",
+                    "type": "url",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "allow_in_bindings": 0,
+                    "placeholder": "https://www.youtube.com/watch?v=...",
+                    "parent_repeater": "field_6a5e3aabe9c6a"
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "acf\/video-carousel"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "display_title": "",
+    "allow_ai_access": false,
+    "ai_description": "",
+    "modified": 1784562000
+}

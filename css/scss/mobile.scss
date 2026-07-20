@@ -70,6 +70,38 @@
   a {
     color: var(--s-text);
   }
+  &.nav-up,
+  &.nav-down {
+    > .s-container {
+      background-color: rgba(17, 17, 17, 0.7);
+      border: 0.0625rem solid rgba(255, 255, 255, 0.1);
+      box-shadow:
+         0.125rem  0.125rem 0.0625rem -0.125rem rgba(255, 255, 255, 0.35) inset,
+        -0.125rem -0.125rem 0.0625rem -0.125rem rgba(255, 255, 255, 0.35) inset,
+        0 0 0.5rem 0 rgba(150, 150, 150, 0.5) inset,
+        0 0.125rem 0.5rem 0.125rem rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(0.375rem);
+    }
+
+    .site-branding img {
+      filter: grayscale(1) brightness(0) invert(1);
+    }
+
+    .site-toggle b,
+    .site-toggle b:before,
+    .site-toggle b:after {
+      background-color: #fff;
+    }
+
+    .site-cta {
+      color: #111111;
+
+      .site-cta__label {
+        background-color: #c5c7bf;
+        color: #111111;
+      }
+    }
+  }
   .show-nav & {
     background-color: var(--s-bg);
     > .s-container {
@@ -1661,6 +1693,202 @@ body.category .content-item .cat-links {
   }
 }
 
+/* Video carousel block */
+.video-carousel-block {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  overflow: hidden;
+  --video-carousel-slide-height: 400px;
+
+  &.is-scrolled-from-start .video-carousel__edge-fade--left {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &.is-scrolled-from-end .video-carousel__edge-fade--right {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .video-carousel {
+    overflow: hidden;
+    width: 100%;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+
+    .swiper-wrapper {
+      align-items: stretch;
+    }
+
+    .swiper-slide {
+      width: auto;
+      height: auto;
+      align-self: stretch;
+      flex-shrink: 0;
+      box-sizing: border-box;
+    }
+  }
+}
+
+.video-carousel__edge-fade {
+  position: absolute;
+  top: 0;
+  z-index: 3;
+  width: min(140px, 22vw);
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+
+  &--left {
+    left: 0;
+    background: linear-gradient(to right, rgba(245, 80, 5, .8) 0%, rgba(245, 80, 5, 0) 100%);
+  }
+
+  &--right {
+    right: 0;
+    background: linear-gradient(to left, rgba(245, 80, 5, .8) 0%, rgba(245, 80, 5, 0) 100%);
+  }
+}
+
+.video-carousel__item {
+  display: block;
+  width: auto;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: grab;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  appearance: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.video-carousel__media {
+  position: relative;
+  display: block;
+  width: auto;
+  height: var(--video-carousel-slide-height);
+  border-radius: 0;
+  overflow: hidden;
+  line-height: 0;
+  pointer-events: none;
+}
+
+.video-carousel__thumb {
+  display: block;
+  width: auto;
+  height: 100%;
+  max-width: none;
+  vertical-align: top;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+.video-carousel__preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .video-carousel__item.is-previewing .video-carousel__thumb,
+  .video-carousel__item:hover .video-carousel__thumb {
+    opacity: 0;
+  }
+
+  .video-carousel__item.is-previewing .video-carousel__preview,
+  .video-carousel__item:hover .video-carousel__preview {
+    opacity: 1;
+  }
+}
+
+.video-carousel-popover {
+  margin: 0;
+  padding: 0;
+  border: none;
+  width: min(92vw, 1100px);
+  max-width: 1100px;
+  background: #000;
+  overflow: visible;
+  color: #fff;
+
+  &::backdrop {
+    background: rgb(0 0 0 / 60%);
+  }
+
+  &:popover-open {
+    position: fixed;
+    inset: unset;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &__close {
+    float: right;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin: 8px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    cursor: pointer;
+    appearance: none;
+    line-height: 1;
+
+    svg {
+      display: block;
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__frame {
+    clear: both;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+  }
+
+  &__iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+}
+
 /* Work carousel block */
 .work-carousel-block {
   width: 100%;
@@ -2471,5 +2699,75 @@ body.category .content-item .cat-links {
       }
     }
     padding: 80px 0 0;
+  }
+}
+
+
+
+/* ACF Marquee block — seamless loop (duration set in JS from track width) */
+.block-marquee {
+  overflow: hidden;
+  width: 100%;
+
+  &__viewport {
+      overflow: hidden;
+      width: 100%;
+  }
+
+  &__track {
+      display: flex;
+      align-items: center;
+      width: max-content;
+      will-change: transform;
+      animation: block-marquee-scroll var(--block-marquee-duration, 60s) linear infinite;
+  }
+
+  &__group {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      gap: clamp(20px, 4vw, 48px);
+  }
+
+  &__item {
+      font-family: var(--s-body);
+      font-size: clamp(24px, 4.5vw, 35px);
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--s-text);
+      white-space: nowrap;
+      flex-shrink: 0;
+  }
+
+  &__sep {
+      display: inline-flex;
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: center;
+      width: clamp(36px, 8vw, 54px);
+      height: clamp(36px, 8vw, 54px);
+      line-height: 0;
+
+      svg {
+          display: block;
+          width: 30px;
+          height: 30px;
+      }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+      &__track {
+          animation: none;
+          transform: none;
+      }
+  }
+}
+
+@keyframes block-marquee-scroll {
+  from {
+      transform: translate3d(0, 0, 0);
+  }
+  to {
+      transform: translate3d(-50%, 0, 0);
   }
 }

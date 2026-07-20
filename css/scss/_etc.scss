@@ -3,8 +3,9 @@
 .alignwide {
   margin-left: calc(var(--s-space) * -1);
   margin-right: calc(var(--s-space) * -1);
-  max-width: 100vw;
-  width: 100vw;
+  width: calc(100% + (var(--s-space) * 2));
+  max-width: none;
+  box-sizing: border-box;
 }
 .wp-block-video video {
   max-width: 750px;
@@ -73,8 +74,11 @@ p.has-drop-cap:not(:focus):first-letter {
 @media (min-width: 576px) {
   .alignfull,
   .alignwide {
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    width: 100vw;
+    max-width: 100vw;
+    box-sizing: border-box;
   }
 }
 @media screen and (min-width: 768px) {

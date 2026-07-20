@@ -1,69 +1,16 @@
 /*
- * Font Name: GreaterTheory
+ * Font Name: cs-genio-mono
  */
 @font-face {
-  font-family: "GreaterTheory";
-  src: url("../fonts/greater-theory/GreaterTheory.otf") format("opentype");
+  font-family: "cs-genio-mono";
+  src: url("../fonts/cs-genio-mono/CSGenioMono-Regular.otf") format("opentype");
   font-style: normal;
   font-display: swap;
 }
 
-/*
- * Font Name: Parkway Lush
- */
-
 @font-face {
-  font-family: "ParkwayLush";
-  src: url("../fonts/parkway-lush/parkway-lush.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-
-/*
- * Font Name: Onest
- */
-
-@font-face {
-  font-family: "Onest";
-  src: url("../fonts/onest/Onest-Light.ttf") format("truetype");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Onest";
-  src: url("../fonts/onest/Onest-Regular.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Onest";
-  src: url("../fonts/onest/Onest-Medium.ttf") format("truetype");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Onest";
-  src: url("../fonts/onest/Onest-SemiBold.ttf") format("truetype");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Onest";
-  src: url("../fonts/onest/Onest-Bold.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Onest";
-  src: url("../fonts/onest/Onest-ExtraBold.ttf") format("truetype");
-  font-weight: 900;
+  font-family: "anton";
+  src: url("../fonts/anton/Anton-Regular.ttf") format("truetype");
   font-style: normal;
   font-display: swap;
 }

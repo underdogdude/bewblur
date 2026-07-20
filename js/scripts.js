@@ -13,3 +13,100 @@ var getClosest=function(e,t){for(Element.prototype.matches||(Element.prototype.m
 /*  Seed Modal from https://codepen.io/kimpetersend1/pen/LajgaW */
 const modalTriggers=document.querySelectorAll(".s-modal-trigger"),bodyBlackout=document.querySelector(".s-modal-bg"),allModals=document.querySelectorAll(".s-modal");modalTriggers.forEach(e=>{e.addEventListener("click",()=>{const{popupTrigger:l}=e.dataset,o=document.querySelector(`[data-s-modal="${l}"]`);o.classList.add("-visible"),bodyBlackout.classList.add("-blacked-out"),o.querySelector(".s-modal-close").addEventListener("click",()=>{o.classList.remove("-visible"),bodyBlackout.classList.remove("-blacked-out")})})}),bodyBlackout.addEventListener("click",()=>{bodyBlackout.classList.remove("-blacked-out"),allModals.forEach(function(e,l){e.classList.remove("-visible")})});
 
+
+
+/* Custom Header Scroll Show and Hide */
+(function(){
+    var doc = document.documentElement;
+    var w = window;
+    var prevScroll = w.scrollY || doc.scrollTop;
+    var curScroll;
+    var direction = 0;
+    var prevDirection = 0;
+    var header = document.getElementById('masthead');
+    var checkScroll = function() {
+      curScroll = w.scrollY || doc.scrollTop;
+      if (curScroll > prevScroll) { 
+        //scrolled up
+        direction = 2;
+      }
+      else if (curScroll < prevScroll) { 
+        //scrolled down
+        direction = 1;
+      }
+  
+        // When near top, reset nav state
+      if (curScroll < 50) {
+        header.classList.remove('nav-down', 'nav-up');
+        prevDirection = 0;
+        return;
+      }
+  
+      if (direction !== prevDirection) {
+        toggleHeader(direction, curScroll);
+      }
+      prevScroll = curScroll;
+    };
+  
+    var toggleHeader = function(direction, curScroll) {
+      if (direction === 2 ) { 
+        header.classList.add('nav-up');
+        header.classList.remove('nav-down');
+        prevDirection = direction;
+      }
+      else if (direction === 1) {
+        header.classList.remove('nav-up');
+        header.classList.add('nav-down');
+        prevDirection = direction;
+      }
+    };
+    
+    window.addEventListener('scroll', checkScroll);
+  })();
+
+/* Block marquee — duration from content width so speed stays consistent on all viewports */
+(function () {
+  var MARQUEE_SPEED_PX = 32;
+
+  function setMarqueeDuration(root) {
+    var track = root.querySelector(".block-marquee__track");
+    if (!track) return;
+
+    var halfWidth = track.scrollWidth / 2;
+    if (halfWidth <= 0) return;
+
+    var duration = halfWidth / MARQUEE_SPEED_PX;
+    track.style.setProperty("--block-marquee-duration", duration + "s");
+  }
+
+  function initMarquee(root) {
+    setMarqueeDuration(root);
+
+    if (typeof ResizeObserver !== "undefined") {
+      var ro = new ResizeObserver(function () {
+        setMarqueeDuration(root);
+      });
+      ro.observe(root.querySelector(".block-marquee__track"));
+    } else {
+      window.addEventListener("resize", function () {
+        setMarqueeDuration(root);
+      });
+    }
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () {
+        setMarqueeDuration(root);
+      });
+    }
+  }
+
+  function initAllMarquees() {
+    document.querySelectorAll(".block-marquee").forEach(initMarquee);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAllMarquees);
+  } else {
+    initAllMarquees();
+  }
+})();

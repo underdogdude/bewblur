@@ -17,38 +17,41 @@
     } else {
         do_action( 'wp_body_open' );
     } ?>
+    <div id="page-transition-overlay" class="page-transition-overlay is-covering" aria-hidden="true">
+        <div class="page-transition-overlay__row page-transition-overlay__row--top">
+            <span class="page-transition-overlay__panel"></span>
+        </div>
+        <div class="page-transition-overlay__row page-transition-overlay__row--bottom">
+            <span class="page-transition-overlay__panel"></span>
+        </div>
+    </div>
     <a class="skip-link screen-reader-text" href="#content"><?php esc_html_e( 'Skip to content', 'seed' ); ?></a>
     <div id="page" class="site">
 
         <header id="masthead" class="site-header _heading">
-            <div class="s-container">
+            <div class="s-container -wide">
 
                 <div class="site-branding">
                     <div class="site-logo"><?php seed_logo(); ?></div>
-                    <?php seed_title(); ?>
                 </div>
 
                 <div class="site-toggle"><b></b></div>
 
-                <?php if (is_active_sidebar( 'headbar_m' )): ?>
-                <div id="headbar_m" class="_mobile"><?php dynamic_sidebar( 'headbar_m' ); ?></div>
-                <?php endif; ?>
-
-                <?php if (is_active_sidebar( 'headbar_d' )): ?>
-                <div id="headbar_d" class="_desktop"><?php dynamic_sidebar( 'headbar_d' ); ?></div>
-                <?php else: ?>
                 <nav id="site-navigation" class="site-nav-d _desktop">
                     <?php wp_nav_menu( array( 'theme_location' => 'primary', 'menu_id' => 'primary-menu' ) );?>
                 </nav>
-                <?php endif; ?>
 
-                <a class="site-search s-modal-trigger m-user" onclick="return false;"
-                    data-popup-trigger="site-search"><?php seed_icon('search'); ?></a>
-
-                <?php seed_member_menu() ?>
-
-                <?php if (is_active_sidebar( 'action' )) : ?>
-                <div class="site-action _desktop"><?php dynamic_sidebar( 'action' ); ?></div>
+                <?php
+                $cta_link = function_exists( 'get_field' ) ? get_field( 'cta_link', 'option' ) : false;
+                if ( $cta_link ) :
+                    $cta_target = ! empty( $cta_link['target'] ) ? $cta_link['target'] : '_self';
+                ?>
+                <a href="<?php echo esc_url( $cta_link['url'] ); ?>" class="site-cta" target="<?php echo esc_attr( $cta_target ); ?>"<?php echo '_blank' === $cta_target ? ' rel="noopener noreferrer"' : ''; ?>>
+                    <span class="site-cta__inner">
+                        <span class="site-cta__label"><?php echo esc_html( $cta_link['title'] ); ?></span>
+                        <span class="site-cta__icon"><?php seed_icon( 'arrow-right' ); ?></span>
+                    </span>
+                </a>
                 <?php endif; ?>
 
             </div>

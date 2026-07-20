@@ -44,7 +44,7 @@ body.headbar-d {
   &.nav-up, &.nav-down {
     > .s-container {
       border-radius: 60px;
-      background-color: rgba(2, 2, 2, 0.3);
+      background-color: rgba(17, 17, 17, 0.7);
       border: 0.0625rem solid rgba(255, 255, 255, 0.1);
       box-shadow:
          0.125rem  0.125rem 0.0625rem -0.125rem rgba(255, 255, 255, 0.35) inset,
@@ -55,6 +55,31 @@ body.headbar-d {
       margin-top: 5px;
       min-height: 66px;
       padding: 0 12px 0 var(--s-site-space);
+    }
+
+    .site-branding img {
+      filter: grayscale(1) brightness(0) invert(1);
+    }
+
+    .site-nav-d a {
+      color: #fff;
+
+      &:hover {
+        color: #fff;
+      }
+    }
+
+    .site-cta {
+      color: #111111;
+
+      &:hover {
+        color: #111111;
+      }
+
+      .site-cta__label {
+        background-color: #c5c7bf;
+        color: #111111;
+      }
     }
   }
 }
@@ -67,13 +92,22 @@ body.headbar-d {
   top: auto;
   left: auto;
   transform: none;
+  z-index: 2;
   img {
-    width: 148px;
+    width: 50px;
+    transition: filter 0.64s cubic-bezier(0.77, 0, 0.18, 1);
   }
 }
 
 .site-nav-d {
-  margin-left: auto;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  z-index: 1;
   > div {
     height: 100%;
   }
@@ -95,9 +129,10 @@ body.headbar-d {
     flex-direction: column;
     text-align: center;
     a {
-      padding: 10px 30px;
+      padding: 10px 25px;
       font-size: 15px;
-      text-transform: uppercase;
+      font-family: var(--s-body);
+      font-weight: 600;
     }
     &:hover {
       > .sub-menu {

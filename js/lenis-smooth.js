@@ -16,6 +16,8 @@ const lenis = new Lenis({
   anchors: true,
 });
 
+window.lenis = lenis;
+
 const header = document.getElementById("masthead");
 const scrollThreshold = 0;
 
