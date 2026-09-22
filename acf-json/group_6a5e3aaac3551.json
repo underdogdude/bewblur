@@ -3,12 +3,12 @@
     "title": "Block Video Carousel",
     "fields": [
         {
-            "key": "field_6a5e3aaac3552",
-            "label": "Slide height",
-            "name": "carousel_slide_height",
+            "key": "field_6ab104e2e0001",
+            "label": "Portfolio Type",
+            "name": "video_carousel_portfolio_type",
             "aria-label": "",
-            "type": "number",
-            "instructions": "Slide height in pixels. Width follows each image.",
+            "type": "radio",
+            "instructions": "Choose a portfolio type to display.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -16,22 +16,24 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": 400,
-            "min": 100,
-            "max": 1200,
-            "allow_in_bindings": 0,
-            "placeholder": "",
-            "step": 1,
-            "prepend": "",
-            "append": "px"
+            "choices": {
+                "all": "All"
+            },
+            "default_value": "all",
+            "return_format": "value",
+            "allow_null": 0,
+            "other_choice": 0,
+            "layout": "horizontal",
+            "save_other_choice": 0,
+            "allow_in_bindings": 0
         },
         {
-            "key": "field_6a5e3aabe9c6a",
-            "label": "Video Carousel",
-            "name": "video_carousel",
+            "key": "field_6ab104e2e0002",
+            "label": "Rows",
+            "name": "video_carousel_rows",
             "aria-label": "",
-            "type": "repeater",
-            "instructions": "",
+            "type": "radio",
+            "instructions": "Choose whether the carousel displays in one or two rows.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -39,83 +41,17 @@
                 "class": "",
                 "id": ""
             },
-            "layout": "table",
-            "pagination": 0,
-            "min": 0,
-            "max": 0,
-            "collapsed": "",
-            "button_label": "Add Row",
-            "rows_per_page": 20,
-            "sub_fields": [
-                {
-                    "key": "field_6a5e3ab9e9c6b",
-                    "label": "Video Thumbnail",
-                    "name": "video_thumbnail",
-                    "aria-label": "",
-                    "type": "image",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "return_format": "url",
-                    "library": "all",
-                    "min_width": "",
-                    "min_height": "",
-                    "min_size": "",
-                    "max_width": "",
-                    "max_height": "",
-                    "max_size": "",
-                    "mime_types": "",
-                    "allow_in_bindings": 0,
-                    "preview_size": "medium",
-                    "parent_repeater": "field_6a5e3aabe9c6a"
-                },
-                {
-                    "key": "field_6a5e3ac4e9c6c",
-                    "label": "Video File",
-                    "name": "video_file",
-                    "aria-label": "",
-                    "type": "file",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "return_format": "url",
-                    "library": "all",
-                    "min_size": "",
-                    "max_size": "",
-                    "mime_types": "mp4,webm",
-                    "allow_in_bindings": 0,
-                    "parent_repeater": "field_6a5e3aabe9c6a"
-                },
-                {
-                    "key": "field_6a5e3ad4e9c6d",
-                    "label": "YouTube URL",
-                    "name": "youtube_url",
-                    "aria-label": "",
-                    "type": "url",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "allow_in_bindings": 0,
-                    "placeholder": "https://www.youtube.com/watch?v=...",
-                    "parent_repeater": "field_6a5e3aabe9c6a"
-                }
-            ]
+            "choices": {
+                "1": "1 row",
+                "2": "2 rows"
+            },
+            "default_value": "1",
+            "return_format": "value",
+            "allow_null": 0,
+            "other_choice": 0,
+            "layout": "horizontal",
+            "save_other_choice": 0,
+            "allow_in_bindings": 0
         }
     ],
     "location": [
@@ -139,5 +75,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1784562000
+    "modified": 1789985351
 }

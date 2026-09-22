@@ -98,3 +98,91 @@ body.post-type-page #wpwrap {
     }
   }
 }
+
+/* Video Carousel block preview — mirror the frontend layout without interaction. */
+.acf-block-preview {
+  .video-carousel-block {
+    width: 100%;
+    max-width: none;
+    overflow: hidden;
+  }
+
+  .video-carousel-block--2-row {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .video-carousel__row {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    --video-carousel-slide-height: 220px;
+  }
+
+  .video-carousel {
+    width: 100%;
+    max-width: none;
+    overflow: hidden;
+  }
+
+  .video-carousel .swiper-wrapper {
+    display: flex;
+    align-items: stretch;
+    gap: 20px;
+    transform: none !important;
+  }
+
+  .video-carousel .swiper-slide {
+    flex: 0 0 auto;
+    align-self: stretch;
+    width: auto !important;
+    height: auto;
+  }
+
+  .video-carousel__item {
+    display: block;
+    width: auto;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 12px;
+    background: none;
+  }
+
+  .video-carousel__media {
+    position: relative;
+    display: block;
+    width: auto;
+    height: var(--video-carousel-slide-height);
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+    line-height: 0;
+  }
+
+  .video-carousel__media.has-video-ratio {
+    width: auto;
+
+    .video-carousel__thumb {
+      width: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .video-carousel__thumb {
+    display: block;
+    width: auto;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    vertical-align: top;
+  }
+
+  .video-carousel__preview,
+  .video-carousel__edge-fade,
+  .video-carousel-popover {
+    display: none;
+  }
+}

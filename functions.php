@@ -207,7 +207,14 @@ add_action('wp_enqueue_scripts', 'seed_scripts');
 add_action('enqueue_block_editor_assets', 'seed_add_gutenberg_assets');
 function seed_add_gutenberg_assets()
 {
-    wp_enqueue_style('seed-gutenberg', get_theme_file_uri('/css/wp-gutenberg.css'), false);
+    $gutenberg_style_path = get_theme_file_path('/css/wp-gutenberg.css');
+
+    wp_enqueue_style(
+        'seed-gutenberg',
+        get_theme_file_uri('/css/wp-gutenberg.css'),
+        array(),
+        file_exists($gutenberg_style_path) ? filemtime($gutenberg_style_path) : false
+    );
 }
 
 /**
@@ -334,3 +341,31 @@ function acf_video_carousel() {
         )
     );
 }
+
+/**
+ * Populate the Video Carousel portfolio type radio field from its taxonomy.
+ *
+ * @param array $field ACF field settings.
+ * @return array
+ */
+function bewblur_video_carousel_portfolio_type_choices( $field ) {
+    $field['choices'] = array(
+        'all' => __( 'All', 'bewblur' ),
+    );
+
+    $terms = get_terms(
+        array(
+            'taxonomy'   => 'portfolio-type',
+            'hide_empty' => false,
+        )
+    );
+
+    if ( ! is_wp_error( $terms ) ) {
+        foreach ( $terms as $term ) {
+            $field['choices'][ $term->slug ] = $term->name;
+        }
+    }
+
+    return $field;
+}
+add_filter( 'acf/load_field/name=video_carousel_portfolio_type', 'bewblur_video_carousel_portfolio_type_choices' );
