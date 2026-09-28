@@ -65,6 +65,21 @@
     video.currentTime = 0;
   }
 
+  function loadPreviewVideo(video) {
+    if (video.getAttribute("src")) {
+      return;
+    }
+
+    var source = video.getAttribute("data-video-src");
+    if (!source) {
+      return;
+    }
+
+    video.preload = "metadata";
+    video.setAttribute("src", source);
+    video.load();
+  }
+
   function openPopover(popover, iframe, videoId, title, permalink) {
     if (!videoId || !iframe || !popover || typeof popover.showPopover !== "function") {
       return;
@@ -101,10 +116,9 @@
     });
   }
 
-  var CONTENT_MAX = 1485;
-  var HOVER_GUTTER = 120;
+  var CONTENT_MAX = 1520;
 
-  function getCarouselEdgeOffset() {
+  function getSiteSpace() {
     var siteSpace = 25;
     var rootStyles = getComputedStyle(document.documentElement);
     var parsed = parseFloat(rootStyles.getPropertyValue("--s-site-space"));
@@ -112,8 +126,15 @@
       siteSpace = parsed;
     }
 
-    var offset = (window.innerWidth - CONTENT_MAX + siteSpace) / 2;
-    return Math.max(siteSpace, offset);
+    return siteSpace;
+  }
+
+  function getCarouselEdgeOffset() {
+    var siteSpace = getSiteSpace();
+
+    var containerWidth = Math.min(window.innerWidth, CONTENT_MAX);
+    var containerLeft = (window.innerWidth - containerWidth) / 2;
+    return containerLeft + siteSpace;
   }
 
   function applyCarouselGap(root) {
@@ -132,11 +153,11 @@
   function syncSwiperMetrics(swiper, root) {
     var gap = applyCarouselGap(root);
     var edgeOffset = getCarouselEdgeOffset();
-    var hoverGutter = desktopMq.matches ? HOVER_GUTTER : 0;
+    var endOffset = getSiteSpace();
     swiper.params.slidesPerView = "auto";
     swiper.params.spaceBetween = gap;
-    swiper.params.slidesOffsetBefore = edgeOffset + hoverGutter;
-    swiper.params.slidesOffsetAfter = edgeOffset + hoverGutter;
+    swiper.params.slidesOffsetBefore = edgeOffset;
+    swiper.params.slidesOffsetAfter = endOffset;
     swiper.update();
     updateScrollFade(swiper, root);
   }
@@ -158,7 +179,7 @@
 
     var gap = applyCarouselGap(root);
     var edgeOffset = getCarouselEdgeOffset();
-    var hoverGutter = desktopMq.matches ? HOVER_GUTTER : 0;
+    var endOffset = getSiteSpace();
 
     var popoverId = root.getAttribute("data-popover-id");
     var popover = popoverId ? document.getElementById(popoverId) : null;
@@ -174,8 +195,8 @@
       watchOverflow: true,
       touchEventsTarget: "wrapper",
       touchStartPreventDefault: false,
-      slidesOffsetBefore: edgeOffset + hoverGutter,
-      slidesOffsetAfter: edgeOffset + hoverGutter,
+      slidesOffsetBefore: edgeOffset,
+      slidesOffsetAfter: endOffset,
       simulateTouch: true,
       threshold: 8,
       preventClicks: true,
@@ -253,6 +274,10 @@
       } else {
         video.addEventListener("loadedmetadata", applyVideoRatio, { once: true });
       }
+
+      if (desktopMq.matches) {
+        loadPreviewVideo(video);
+      }
     });
 
     root.querySelectorAll(".video-carousel__item[data-youtube-id]").forEach(function (item) {
@@ -309,6 +334,20 @@
     }
 
     document.querySelectorAll(".video-carousel.swiper").forEach(initCarousel);
+  }
+
+  function loadDesktopPreviewVideos(event) {
+    if (!event.matches) {
+      return;
+    }
+
+    document.querySelectorAll(".video-carousel__preview").forEach(loadPreviewVideo);
+  }
+
+  if (typeof desktopMq.addEventListener === "function") {
+    desktopMq.addEventListener("change", loadDesktopPreviewVideos);
+  } else if (typeof desktopMq.addListener === "function") {
+    desktopMq.addListener(loadDesktopPreviewVideos);
   }
 
   if (document.readyState === "loading") {

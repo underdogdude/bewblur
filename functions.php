@@ -90,6 +90,107 @@ function seed_content_width()
 add_action('after_setup_theme', 'seed_content_width', 0);
 
 /**
+ * Refresh rewrite rules once after the Portfolio post type is available.
+ *
+ * Without its rewrite rule, WordPress treats portfolio permalinks as 404s and
+ * redirect_canonical() can incorrectly guess a similarly named media file.
+ */
+function bewblur_maybe_flush_portfolio_rewrite_rules() {
+    $rewrite_version = '1';
+
+    if (
+        ! post_type_exists( 'portfolio' ) ||
+        $rewrite_version === get_option( 'bewblur_portfolio_rewrite_version' )
+    ) {
+        return;
+    }
+
+    flush_rewrite_rules( false );
+    update_option( 'bewblur_portfolio_rewrite_version', $rewrite_version );
+}
+add_action( 'init', 'bewblur_maybe_flush_portfolio_rewrite_rules', 99 );
+
+if ( ! function_exists( 'bewblur_get_youtube_id' ) ) {
+    /**
+     * Extract a YouTube video ID from a URL string.
+     *
+     * @param string $url YouTube URL.
+     * @return string
+     */
+    function bewblur_get_youtube_id( $url ) {
+        if ( empty( $url ) || ! is_string( $url ) ) {
+            return '';
+        }
+
+        $patterns = array(
+            '#youtu\.be/([^?&/]+)#i',
+            '#[?&]v=([^&]+)#i',
+            '#youtube\.com/(?:embed|shorts|live)/([^?&/]+)#i',
+        );
+
+        foreach ( $patterns as $pattern ) {
+            if ( preg_match( $pattern, trim( $url ), $matches ) ) {
+                return sanitize_text_field( $matches[1] );
+            }
+        }
+
+        return '';
+    }
+}
+
+/**
+ * Check whether a navigation menu item is marked as coming soon in ACF.
+ *
+ * @param WP_Post $menu_item Navigation menu item.
+ * @return bool
+ */
+function bewblur_is_coming_soon_menu_item( $menu_item ) {
+    if ( ! function_exists( 'get_field' ) || empty( $menu_item->ID ) ) {
+        return false;
+    }
+
+    return (bool) get_field( 'is_coming_soon', $menu_item->ID );
+}
+
+/**
+ * Add a styling hook to coming-soon navigation menu items.
+ *
+ * @param string[] $classes   Menu item CSS classes.
+ * @param WP_Post  $menu_item Navigation menu item.
+ * @return string[]
+ */
+function bewblur_coming_soon_menu_item_classes( $classes, $menu_item ) {
+    if ( bewblur_is_coming_soon_menu_item( $menu_item ) ) {
+        $classes[] = 'menu-item-coming-soon';
+    }
+
+    return $classes;
+}
+add_filter( 'nav_menu_css_class', 'bewblur_coming_soon_menu_item_classes', 10, 2 );
+
+/**
+ * Wrap navigation titles consistently and display a coming-soon status when needed.
+ *
+ * @param string  $title     Menu item title.
+ * @param WP_Post $menu_item Navigation menu item.
+ * @return string
+ */
+function bewblur_coming_soon_menu_item_title( $title, $menu_item ) {
+    $label = sprintf( '<span class="menu-item__label">%s</span>', $title );
+
+    if ( ! bewblur_is_coming_soon_menu_item( $menu_item ) ) {
+        return $label;
+    }
+
+    return sprintf(
+        '<span class="menu-item__coming-soon">%1$s</span>%2$s',
+        esc_html__( 'Coming Soon', 'seed' ),
+        $label
+    );
+}
+add_filter( 'nav_menu_item_title', 'bewblur_coming_soon_menu_item_title', 10, 2 );
+
+/**
  * Register widget area.
  */
 function seed_widgets_init()
@@ -113,8 +214,8 @@ add_action('widgets_init', 'seed_widgets_init');
 function seed_scripts()
 {
 
-    wp_enqueue_style('s-mobile', get_theme_file_uri('/css/mobile.css'), array(), false);
-    wp_enqueue_style('s-desktop', get_theme_file_uri('/css/desktop.css'), array(), false , '(min-width: 1025px)');
+    wp_enqueue_style('s-mobile', get_theme_file_uri('/css/mobile.css'), array(), filemtime(get_theme_file_path('/css/mobile.css')));
+    wp_enqueue_style('s-desktop', get_theme_file_uri('/css/desktop.css'), array(), filemtime(get_theme_file_path('/css/desktop.css')), '(min-width: 1025px)');
 
     if ($GLOBALS['s_style_css'] == 'enable') {
         wp_enqueue_style('s-style', get_stylesheet_uri());
@@ -170,7 +271,7 @@ function seed_scripts()
         'page-transitions',
         get_theme_file_uri('/js/page-transitions.js'),
         array(),
-        '1.3',
+        filemtime(get_theme_file_path('/js/page-transitions.js')),
         true
     );
     
@@ -185,7 +286,7 @@ function seed_scripts()
         'video-carousel',
         get_theme_file_uri('/js/video-carousel.js'),
         array('s-swiper'),
-        false,
+        filemtime(get_theme_file_path('/js/video-carousel.js')),
         true
     );
 
@@ -296,6 +397,11 @@ if( function_exists('acf_add_options_page') ) {
 		'redirect'		=> false
 	));
 }
+
+/**
+ * YouTube description synchronization for Portfolio posts.
+ */
+require get_template_directory() . '/inc/youtube-descriptions.php';
 
 
 /* === Marquee Block === */

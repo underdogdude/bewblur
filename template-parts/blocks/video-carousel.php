@@ -38,31 +38,12 @@ $portfolio_type = get_field( 'video_carousel_portfolio_type' );
 $row_count       = (int) get_field( 'video_carousel_rows' );
 $row_count       = 2 === $row_count ? 2 : 1;
 
-$query_args = array(
-	'post_type'              => 'portfolio',
-	'post_status'            => 'publish',
-	'posts_per_page'         => 16,
-	'orderby'                => 'rand',
-	'no_found_rows'          => true,
-	'ignore_sticky_posts'    => true,
-	'update_post_term_cache' => false,
-);
+$build_item = static function ( $portfolio ) {
+	$post_id = $portfolio instanceof WP_Post ? $portfolio->ID : absint( $portfolio );
+	if ( ! $post_id || 'portfolio' !== get_post_type( $post_id ) || 'publish' !== get_post_status( $post_id ) ) {
+		return null;
+	}
 
-if ( ! empty( $portfolio_type ) && 'all' !== $portfolio_type ) {
-	$query_args['tax_query'] = array(
-		array(
-			'taxonomy' => 'portfolio-type',
-			'field'    => 'slug',
-			'terms'    => sanitize_title( $portfolio_type ),
-		),
-	);
-}
-
-$portfolio_query = new WP_Query( $query_args );
-$items           = array();
-
-foreach ( $portfolio_query->posts as $portfolio ) {
-	$post_id      = $portfolio->ID;
 	$thumbnail_id = get_post_thumbnail_id( $post_id );
 	$video_teaser = get_field( 'video_teaser', $post_id );
 	$video_id     = get_field( 'video_teaser', $post_id, false );
@@ -82,28 +63,77 @@ foreach ( $portfolio_query->posts as $portfolio ) {
 		}
 	}
 
-	$items[] = array(
+	return array(
 		'title'        => get_the_title( $post_id ),
-		'permalink'    => get_permalink( $post_id ),
+		// The project ID bypasses any previously cached canonical redirect that
+		// pointed this permalink at a same-named teaser attachment.
+		'permalink'    => add_query_arg( 'project', $post_id, get_permalink( $post_id ) ),
 		'thumbnail_id' => $thumbnail_id,
 		'thumb_url'    => $thumbnail_id ? '' : get_theme_file_uri( '/img/thumb.jpg' ),
 		'video_teaser' => $video_teaser,
 		'video_ratio'  => $video_ratio,
 		'youtube_id'   => bewblur_get_youtube_id( $youtube_url ),
 	);
-}
+};
 
-if ( empty( $items ) ) {
-	return;
-}
+$build_items = static function ( $portfolios ) use ( $build_item ) {
+	$items = array();
 
-$rows = array( $items );
-if ( 2 === $row_count ) {
-	$split_at = (int) ceil( count( $items ) / 2 );
-	$rows     = array(
-		array_slice( $items, 0, $split_at ),
-		array_slice( $items, $split_at ),
+	foreach ( (array) $portfolios as $portfolio ) {
+		$item = $build_item( $portfolio );
+		if ( $item ) {
+			$items[] = $item;
+		}
+	}
+
+	return $items;
+};
+
+$row_1_portfolios = get_field( 'video_carousel_row_1_portfolios' );
+$row_2_portfolios = 2 === $row_count ? get_field( 'video_carousel_row_2_portfolios' ) : array();
+$has_manual_rows  = ! empty( $row_1_portfolios ) || ( 2 === $row_count && ! empty( $row_2_portfolios ) );
+
+if ( $has_manual_rows ) {
+	$rows = array( $build_items( $row_1_portfolios ) );
+	if ( 2 === $row_count ) {
+		$rows[] = $build_items( $row_2_portfolios );
+	}
+} else {
+	$query_args = array(
+		'post_type'              => 'portfolio',
+		'post_status'            => 'publish',
+		'posts_per_page'         => 16,
+		'orderby'                => 'rand',
+		'no_found_rows'          => true,
+		'ignore_sticky_posts'    => true,
+		'update_post_term_cache' => false,
 	);
+
+	if ( ! empty( $portfolio_type ) && 'all' !== $portfolio_type ) {
+		$query_args['tax_query'] = array(
+			array(
+				'taxonomy' => 'portfolio-type',
+				'field'    => 'slug',
+				'terms'    => sanitize_title( $portfolio_type ),
+			),
+		);
+	}
+
+	$portfolio_query = new WP_Query( $query_args );
+	$items           = $build_items( $portfolio_query->posts );
+	$rows            = array( $items );
+
+	if ( 2 === $row_count ) {
+		$split_at = (int) ceil( count( $items ) / 2 );
+		$rows     = array(
+			array_slice( $items, 0, $split_at ),
+			array_slice( $items, $split_at ),
+		);
+	}
+}
+
+if ( empty( array_filter( $rows ) ) ) {
+	return;
 }
 
 $class_name = 'video-carousel-block video-carousel-block--' . $row_count . '-row';
@@ -130,7 +160,7 @@ $popover_id = 'video-carousel-popover-' . $block_id;
 		?>
 		<div
 			class="video-carousel__row video-carousel__row--<?php echo esc_attr( $row_number ); ?>"
-			style="<?php echo esc_attr( '--video-carousel-slide-height: ' . $row_height . 'px;' ); ?>"
+			style="<?php echo esc_attr( '--video-carousel-slide-height-desktop: ' . $row_height . 'px;' ); ?>"
 		>
 			<span class="video-carousel__edge-fade video-carousel__edge-fade--left" aria-hidden="true"></span>
 			<span class="video-carousel__edge-fade video-carousel__edge-fade--right" aria-hidden="true"></span>
@@ -185,11 +215,11 @@ $popover_id = 'video-carousel-popover-' . $block_id;
 									<?php if ( ! empty( $item['video_teaser'] ) ) : ?>
 										<video
 											class="video-carousel__preview"
-											src="<?php echo esc_url( $item['video_teaser'] ); ?>"
+											data-video-src="<?php echo esc_url( $item['video_teaser'] ); ?>"
 											muted
 											loop
 											playsinline
-											preload="metadata"
+											preload="none"
 										></video>
 									<?php endif; ?>
 								</span>

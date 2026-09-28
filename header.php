@@ -46,7 +46,7 @@
                 if ( $cta_link ) :
                     $cta_target = ! empty( $cta_link['target'] ) ? $cta_link['target'] : '_self';
                 ?>
-                <a href="<?php echo esc_url( $cta_link['url'] ); ?>" class="site-cta" target="<?php echo esc_attr( $cta_target ); ?>"<?php echo '_blank' === $cta_target ? ' rel="noopener noreferrer"' : ''; ?>>
+                <a href="<?php echo esc_url( $cta_link['url'] ); ?>" class="site-cta site-cta--header" target="<?php echo esc_attr( $cta_target ); ?>"<?php echo '_blank' === $cta_target ? ' rel="noopener noreferrer"' : ''; ?>>
                     <span class="site-cta__inner">
                         <span class="site-cta__label"><?php echo esc_html( $cta_link['title'] ); ?></span>
                         <span class="site-cta__icon"><?php seed_icon( 'arrow-right' ); ?></span>
@@ -58,6 +58,14 @@
             <nav id="site-nav-m" class="site-nav-m">
                 <div class="s-container">
                     <?php wp_nav_menu( array( 'theme_location' => 'mobile', 'menu_id' => 'mobile-menu' ) ); ?>
+                    <?php if ( $cta_link ) : ?>
+                    <a href="<?php echo esc_url( $cta_link['url'] ); ?>" class="site-cta site-cta--mobile" target="<?php echo esc_attr( $cta_target ); ?>"<?php echo '_blank' === $cta_target ? ' rel="noopener noreferrer"' : ''; ?>>
+                        <span class="site-cta__inner">
+                            <span class="site-cta__label"><?php echo esc_html( $cta_link['title'] ); ?></span>
+                            <span class="site-cta__icon"><?php seed_icon( 'arrow-right' ); ?></span>
+                        </span>
+                    </a>
+                    <?php endif; ?>
                 </div>
             </nav>
         </header>

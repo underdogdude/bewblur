@@ -18,6 +18,26 @@
             },
             "return_format": "array",
             "allow_in_bindings": 0
+        },
+        {
+            "key": "field_bewblur_youtube_api_key",
+            "label": "YouTube Data API Key",
+            "name": "youtube_api_key",
+            "aria-label": "",
+            "type": "password",
+            "instructions": "Required to copy YouTube video descriptions into Portfolio content. Restrict this key to YouTube Data API v3.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": 128,
+            "allow_in_bindings": 0
         }
     ],
     "location": [
@@ -41,5 +61,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1783757393
+    "modified": 1790521800
 }

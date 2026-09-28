@@ -17,6 +17,22 @@
   var transitionDuration = 900;
   var isNavigating = false;
 
+  function moveOverlayToTopLayer() {
+    if (typeof overlay.showPopover !== "function") {
+      return;
+    }
+
+    overlay.setAttribute("popover", "manual");
+
+    try {
+      if (!overlay.matches(":popover-open")) {
+        overlay.showPopover();
+      }
+    } catch (error) {
+      // The fixed-position overlay remains as the fallback.
+    }
+  }
+
   function shouldTransition(link) {
     if (!link || !link.href || isNavigating) {
       return false;
@@ -55,6 +71,7 @@
 
   function fadeOut(callback) {
     isNavigating = true;
+    moveOverlayToTopLayer();
     overlay.classList.add("is-covering");
 
     setTimeout(function () {
@@ -109,11 +126,15 @@
         return;
       }
 
+      // Freeze the destination before the transition starts. Elements inside
+      // popovers can change state while the curtain animation is running.
+      var destination = link.href;
+
       event.preventDefault();
       event.stopPropagation();
 
       fadeOut(function () {
-        window.location.href = link.href;
+        window.location.href = destination;
       });
     },
     true

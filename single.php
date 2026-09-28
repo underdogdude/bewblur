@@ -17,6 +17,12 @@ get_header(); ?>
 ?>
 <?php while ( have_posts() ) : the_post(); ?>
 
+<?php if ( 'portfolio' === get_post_type() ) : ?>
+
+    <?php get_template_part( 'template-parts/content', 'portfolio' ); ?>
+
+<?php else : ?>
+
 <div class="site-single <?php echo($singleclass);?>">
 
     <?php seed_banner_title(get_the_ID()); ?>
@@ -51,6 +57,8 @@ get_header(); ?>
     </div>
 
 </div>
+
+<?php endif; ?>
 
 <?php endwhile; ?>
 <?php get_footer(); ?>
