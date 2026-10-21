@@ -235,7 +235,7 @@
     }
   }
 
-  var CONTENT_MAX = 1520;
+  var CONTENT_MAX = 1620;
 
   function getSiteSpace() {
     var siteSpace = 25;
@@ -249,6 +249,10 @@
   }
 
   function getCarouselEdgeOffset() {
+    if (window.innerWidth < 1025) {
+      return 15;
+    }
+
     var siteSpace = getSiteSpace();
 
     var containerWidth = Math.min(window.innerWidth, CONTENT_MAX);

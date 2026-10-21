@@ -500,6 +500,17 @@ body.headbar-d {
 }
 
 
+.block-marquee {
+  &__item {
+    font-size: 62px;
+  }
+
+  &__sep {
+    width: 55px;
+    height: 55px;
+  }
+}
+
 /* Single */
 .single-banner {
   padding-top: calc(var(--s-header-height) + 100px);
