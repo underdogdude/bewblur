@@ -232,16 +232,16 @@ $popover_id = 'video-carousel-popover-' . $block_id;
 	<?php endforeach; ?>
 </div>
 
-<div
+<dialog
 	id="<?php echo esc_attr( $popover_id ); ?>"
 	class="video-carousel-popover"
-	popover
+	role="dialog"
+	aria-modal="true"
+	aria-hidden="true"
 >
 	<button
 		type="button"
 		class="video-carousel-popover__close"
-		popovertarget="<?php echo esc_attr( $popover_id ); ?>"
-		popovertargetaction="hide"
 		aria-label="<?php esc_attr_e( 'Close', 'bewblur' ); ?>"
 	><?php seed_icon( 'x' ); ?></button>
 	<div class="video-carousel-popover__frame">
@@ -258,4 +258,4 @@ $popover_id = 'video-carousel-popover-' . $block_id;
 			<?php esc_html_e( 'View project', 'bewblur' ); ?>
 		</a>
 	</div>
-</div>
+</dialog>

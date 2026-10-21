@@ -3,6 +3,7 @@
 
   var desktopMq = window.matchMedia("(min-width: 1025px)");
   var PREVIEW_DELAY = 350;
+  var fallbackOpenPopover = null;
 
   function embedYoutubeUrl(videoId) {
     return (
@@ -80,8 +81,99 @@
     video.load();
   }
 
-  function openPopover(popover, iframe, videoId, title, permalink) {
-    if (!videoId || !iframe || !popover || typeof popover.showPopover !== "function") {
+  function supportsNativeDialog(popover) {
+    return Boolean(
+      popover &&
+      typeof popover.showModal === "function" &&
+      typeof popover.close === "function"
+    );
+  }
+
+  function clearPopoverVideo(popover) {
+    var iframe = popover
+      ? popover.querySelector(".video-carousel-popover__iframe")
+      : null;
+
+    if (iframe) {
+      iframe.removeAttribute("src");
+    }
+  }
+
+  function closeFallbackPopover(popover, restoreFocus) {
+    if (!popover || !popover.classList.contains("is-fallback-open")) {
+      return;
+    }
+
+    popover.classList.remove("is-fallback-open");
+    popover.setAttribute("aria-hidden", "true");
+    document.documentElement.classList.remove("has-video-carousel-popover");
+    clearPopoverVideo(popover);
+
+    document.removeEventListener("pointerdown", handleFallbackPointerDown, true);
+    document.removeEventListener("keydown", handleFallbackKeydown);
+
+    if (fallbackOpenPopover === popover) {
+      fallbackOpenPopover = null;
+    }
+
+    if (restoreFocus && popover.fallbackTrigger) {
+      popover.fallbackTrigger.focus();
+    }
+  }
+
+  function handleFallbackPointerDown(event) {
+    if (
+      fallbackOpenPopover &&
+      !fallbackOpenPopover.contains(event.target)
+    ) {
+      closeFallbackPopover(fallbackOpenPopover, false);
+    }
+  }
+
+  function handleFallbackKeydown(event) {
+    if (event.key === "Escape" && fallbackOpenPopover) {
+      event.preventDefault();
+      closeFallbackPopover(fallbackOpenPopover, true);
+    }
+  }
+
+  function openFallbackPopover(popover, trigger) {
+    if (fallbackOpenPopover && fallbackOpenPopover !== popover) {
+      closeFallbackPopover(fallbackOpenPopover, false);
+    }
+
+    fallbackOpenPopover = popover;
+    popover.fallbackTrigger = trigger || null;
+    popover.classList.add("is-fallback-open");
+    popover.setAttribute("aria-hidden", "false");
+    document.documentElement.classList.add("has-video-carousel-popover");
+
+    document.addEventListener("pointerdown", handleFallbackPointerDown, true);
+    document.addEventListener("keydown", handleFallbackKeydown);
+
+    var closeButton = popover.querySelector(".video-carousel-popover__close");
+    if (closeButton) {
+      closeButton.focus();
+    }
+  }
+
+  function closePopover(popover, restoreFocus) {
+    if (!popover) {
+      return;
+    }
+
+    if (supportsNativeDialog(popover)) {
+      if (popover.open) {
+        popover.close();
+      }
+      return;
+    }
+
+    closeFallbackPopover(popover, restoreFocus);
+  }
+
+  function openPopover(popover, iframe, videoId, title, permalink, trigger) {
+    if (!videoId || !iframe || !popover) {
       return;
     }
 
@@ -97,23 +189,50 @@
 
     iframe.setAttribute("src", embedYoutubeUrl(videoId));
 
-    if (popover.matches(":popover-open")) {
-      popover.hidePopover();
+    if (supportsNativeDialog(popover)) {
+      try {
+        if (popover.open) {
+          popover.close();
+        }
+
+        popover.setAttribute("aria-hidden", "false");
+        popover.showModal();
+        return;
+      } catch (error) {
+        popover.removeAttribute("open");
+      }
     }
 
-    popover.showPopover();
+    openFallbackPopover(popover, trigger);
   }
 
   function bindPopoverToggle(popover, iframe) {
-    if (!popover || !iframe) {
+    if (!popover || !iframe || popover.videoCarouselBound) {
       return;
     }
 
-    popover.addEventListener("toggle", function (event) {
-      if (event.newState === "closed") {
+    popover.videoCarouselBound = true;
+
+    var closeButton = popover.querySelector(".video-carousel-popover__close");
+    if (closeButton) {
+      closeButton.addEventListener("click", function (event) {
+        event.preventDefault();
+        closePopover(popover, true);
+      });
+    }
+
+    if (supportsNativeDialog(popover)) {
+      popover.addEventListener("close", function () {
+        popover.setAttribute("aria-hidden", "true");
         iframe.removeAttribute("src");
-      }
-    });
+      });
+
+      popover.addEventListener("click", function (event) {
+        if (event.target === popover) {
+          closePopover(popover, false);
+        }
+      });
+    }
   }
 
   var CONTENT_MAX = 1520;
@@ -229,7 +348,8 @@
             iframe,
             item.getAttribute("data-youtube-id"),
             item.getAttribute("data-portfolio-title"),
-            item.getAttribute("data-portfolio-url")
+            item.getAttribute("data-portfolio-url"),
+            item
           );
         },
       },
@@ -291,7 +411,8 @@
           iframe,
           item.getAttribute("data-youtube-id"),
           item.getAttribute("data-portfolio-title"),
-          item.getAttribute("data-portfolio-url")
+          item.getAttribute("data-portfolio-url"),
+          item
         );
       });
     });
